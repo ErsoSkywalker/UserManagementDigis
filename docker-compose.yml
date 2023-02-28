@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  mysqldb:
+    image: mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=n0m3l0
+      - MYSQL_DATABASE=users
+    ports:
+      - 3307:3306
+    volumes:
+      - db:/var/lib/mysql
+  api:
+    container_name: api
+    restart: always
+    build: .
+    depends_on:
+      - mysqldb
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/users?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: n0m3l0
+    ports:
+      - "5000:8080"
+
+volumes:
+  db:
